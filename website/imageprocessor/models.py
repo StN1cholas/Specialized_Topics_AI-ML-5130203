@@ -24,7 +24,7 @@ class ImagePrediction(models.Model):
             predictions_data = json.loads(self.predictions)
 
             # Формируем словарь {вероятность: класс}
-            predictions_dict = {predictions_data[i]: classes[i] for i in
+            predictions_dict = {predictions_data[i]*100: classes[i] for i in
                                 range(len(classes))}
 
             # Сортируем словарь по убыванию вероятностей
@@ -39,8 +39,9 @@ class ImagePrediction(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Prediction uploaded at {self.uploaded_at}"
-
+        return f"{self.uploaded_at.strftime('%H:%M:%S %d/%m/%Y')}"
+    def preds(self):
+        return dict(list(json.loads(self.predictions).items())[:5])
 
 class ResNet50Custom(nn.Module):
     def __init__(self, num_classes):

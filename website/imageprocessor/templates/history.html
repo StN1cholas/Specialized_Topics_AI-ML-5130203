@@ -17,8 +17,9 @@
             text-align: center;
         }
         .container {
-            max-width: 800px;
-            left:
+            max-width: 600px;
+            position: relative; /* Относительное позиционирование */
+            left: 70px;
             margin: auto;
             background: white;
             padding: 20px;
@@ -38,7 +39,7 @@
             border-radius: 5px;
         }
         img {
-            max-width: 100px;
+            max-width: 230px;
             border-radius: 5px;
             margin-right: 15px;
         }
@@ -48,6 +49,9 @@
         .back-link {
             text-align: center;
             margin-top: 20px;
+        }
+        .right-align {
+            text-align: right;
         }
         a {
             text-decoration: none;
@@ -89,13 +93,20 @@
     <div class="container">
         <h1>History</h1>
         <ul>
-            {% for item in history %}
-            <li>
-                <img src="{{ item.image.url }}" alt="Image">
-                <div class="predictions">Predictions: {{ item.predictions }}</div>
-            </li>
-            {% endfor %}
-        </ul>
+        {% for item in history %}
+        <li>
+            <img src="{{ item.image.url }}" alt="Image">
+            <div class="predictions">
+                <ul>
+                    {% for probability, class_name in item.preds.items %}
+                        <li>{{ probability|floatformat:2 }}% : {{ class_name }}</li>
+                    {% endfor %}
+                </ul>
+                <div style="text-align: right;">{{ item }}</div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
     </div>
 </body>
 </html>
