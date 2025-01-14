@@ -1,6 +1,15 @@
 import torch.nn as nn
 from torchvision import models as tmodels
 from django.db import models
+import json
+
+classes = ['apple', 'banana', 'beetroot', 'bell pepper', 'cabbage', 'capsicum',
+           'carrot', 'cauliflower', 'chilli pepper', 'corn', 'cucumber',
+           'eggplant', 'garlic', 'ginger', 'grapes', 'jalepeno', 'kiwi',
+           'lemon', 'lettuce', 'mango', 'onion', 'orange', 'paprika', 'pear',
+           'peas', 'pineapple', 'pomegranate', 'potato', 'raddish',
+           'soy beans', 'spinach', 'sweetcorn', 'sweetpotato', 'tomato',
+           'turnip', 'watermelon']
 
 
 class ImagePrediction(models.Model):
@@ -9,6 +18,25 @@ class ImagePrediction(models.Model):
     predictions = models.TextField()  # JSON-строка с предсказаниями
     uploaded_at = models.DateTimeField(
         auto_now_add=True)  # Дата и время загрузки
+
+    def save(self, *args, **kwargs):
+        if self.predictions:
+            predictions_data = json.loads(self.predictions)
+
+            # Формируем словарь {вероятность: класс}
+            predictions_dict = {predictions_data[i]: classes[i] for i in
+                                range(len(classes))}
+
+            # Сортируем словарь по убыванию вероятностей
+            sorted_predictions = dict(
+                sorted(predictions_dict.items(), key=lambda item: item[0],
+                       reverse=True))
+
+            # Переводим отсортированный словарь в строку для сохранения
+            self.predictions = json.dumps(sorted_predictions)
+
+        # Сохраняем объект
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Prediction uploaded at {self.uploaded_at}"

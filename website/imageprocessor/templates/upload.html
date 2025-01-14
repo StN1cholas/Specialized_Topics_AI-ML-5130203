@@ -1,14 +1,168 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Image</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #eaeef1 0%, #f4f4f4 100%);
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5em; /* Увеличенный размер шрифта */
+        }
+        .container {
+            max-width: 600px;
+            position: relative; /* Относительное позиционирование */
+            left: 70px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s; /* Плавный переход для эффекта при наведении */
+        }
+        .container:hover {
+            transform: scale(1.02); /* Увеличение контейнера при наведении */
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        /* Стили для кнопки выбора файла */
+        .file-upload {
+            display: flex;
+            align-items: center; /* Выравнивание по центру по вертикали */
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        .file-upload input[type="file"] {
+            font-size: 20px; /* Размер шрифта для поля */
+            position: absolute;
+            top: 0;
+            right: 0;
+            opacity: 0; /* Скрываем стандартное поле */
+            height: 100%;
+            width: 100%;
+            cursor: pointer; /* Указатель при наведении */
+        }
+        .file-upload-label {
+            display: inline-block;
+            padding: 10px 20px; /* Отступы для кнопки */
+            background-color: #007bff; /* Цвет фона */
+            color: white; /* Цвет текста */
+            border-radius: 5px; /* Скругление углов */
+            font-size: 16px; /* Размер шрифта */
+            text-align: center; /* Центрирование текста */
+            transition: background-color 0.3s, transform 0.2s; /* Плавный переход */
+            cursor: pointer; /* Указатель при наведении */
+        }
+        .file-upload-label {
+            display: inline-block;
+            padding: 10px 20px; /* Отступы для кнопки */
+            background-color: #007bff; /* Цвет фона */
+            color: white; /* Цвет текста */
+            border-radius: 5px; /* Скругление углов */
+            font-size: 16px; /* Размер шрифта */
+            text-align: center; /* Центрирование текста */
+            transition: background-color 0.3s, transform 0.2s; /* Плавный переход */
+            cursor: pointer; /* Указатель при наведении */
+        }
+        .file-upload-label:hover {
+            background-color: #0056b3; /* Цвет фона при наведении */
+            transform: translateY(-2px); /* Подъем кнопки при наведении */
+        }
+        button {
+            padding: 10px;
+            background-color: #007bff; /* Основной цвет кнопки */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.2s; /* Плавный переход для кнопки */
+        }
+        button:hover {
+            background-color: #0056b3; /* Цвет фона при наведении */
+            transform: translateY(-2px); /* Подъем кнопки при наведении */
+        }
+        .menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        .menu a {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            display: block;
+        }
+        .menu a.active {
+            background-color: lightgray; /* бледный цвет фона для активной ссылки */
+            color: black; /* цвет текста для активной ссылки */
+        }
+        .menu a:hover {
+            background-color: #0056b3;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .file-name {
+            margin-left: 15px;
+            font-size: 20px;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
-    <h1>Upload an Image</h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Upload</button>
-    </form>
+    <div class="menu">
+        <a href="/" class="active">Upload Image</a>
+        <a href="/history/">View History</a>
+    </div>
+    <div class="container">
+        <h1>Upload an Image</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="file-upload">
+                <label class="file-upload-label" for="file-upload">Выберите файл</label>
+                <input type="file" id="file-upload" name="image" accept="image/*" onchange="updateFileName()">
+                <div class="file-name" id="file-name">Файл не выбран</div>
+            </div>
+
+            <button type="submit">Upload <i class="fas fa-upload"></i></button>
+        </form>
+    </div>
+
+    <script>
+        function updateFileName() {
+            const input = document.getElementById('file-upload');
+            const fileName = document.getElementById('file-name');
+
+            if (input.files.length > 0) {
+                fileName.textContent = input.files[0].name; // Отображаем имя выбранного файла
+            } else {
+                fileName.textContent = 'Файл не выбран'; // Сообщение по умолчанию
+            }
+        }
+    </script>
 </body>
 </html>

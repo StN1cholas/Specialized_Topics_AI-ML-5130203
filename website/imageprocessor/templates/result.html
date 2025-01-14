@@ -1,17 +1,94 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prediction Result</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            position: relative; /* Относительное позиционирование */
+            left: 70px;
+            margin: 0 auto; /* Центрирование контейнера */
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1; /* Устанавливаем z-index для контейнера */
+        }
+        img {
+            display: block;
+            margin: 0 auto 20px;
+            border-radius: 8px;
+        }
+        h2 {
+            color: #555;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #e9ecef;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .menu {
+            position: fixed; /* Фиксированное позиционирование */
+            top: 20px; /* Отступ сверху */
+            left: 20px; /* Отступ слева */
+            background-color: #ffffff; /* Фон меню */
+            padding: 15px; /* Отступы вокруг меню */
+            border-radius: 8px; /* Скругление углов меню */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Тень для меню */
+            z-index: 2; /* Устанавливаем z-index для меню выше контейнера */
+        }
+        .menu a {
+            background-color: #007bff; /* Цвет фона кнопки */
+            color: white; /* Цвет текста */
+            padding: 10px 15px; /* Отступы внутри кнопки */
+            margin-bottom: 10px; /* Отступ между кнопками */
+            border-radius: 5px; /* Скругление углов */
+            text-decoration: none; /* Убираем подчеркивание */
+            transition: background-color 0.3s; /* Плавный переход цвета */
+            display: block; /* Делает ссылку блочным элементом */
+        }
+        .menu a:hover {
+            background-color: #0056b3; /* Цвет фона при наведении */
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Prediction Result</h1>
-    <img src="{{ image_url }}" alt="Uploaded Image" style="max-width: 400px;">
-    <h2>Top 5 Predictions</h2>
-    <ul>
-       {% for class, prob in classes_and_probs %}
-    <p>{{ class }} - {{ prob }}</p>
-{% endfor %}
-    </ul>
-    <a href="/">Upload another image</a> | <a href="/history/">View history</a>
+    <div class="menu">
+        <a href="/">Upload Image</a>
+        <a href="/history/">View History</a>
+    </div>
+    <div class="container">
+        <h1>Prediction Result</h1>
+        <img src="{{ image_url }}" alt="Uploaded Image" style="max-width: 100%;">
+        <h2>Top 5 Predictions</h2>
+        <ul>
+           {% for class, prob in classes_and_probs %}
+                <li>{{ class }} - {{ prob|floatformat:2 }}%</li>
+           {% endfor %}
+        </ul>
+    </div>
 </body>
 </html>

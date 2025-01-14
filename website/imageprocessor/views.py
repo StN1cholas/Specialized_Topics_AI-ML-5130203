@@ -8,18 +8,12 @@ from PIL import Image
 import torch.nn.functional as F
 import pickle
 import torch
-
 from torchvision import transforms
+
 import logging
 
 # Классы для предсказаний
-classes = ['apple', 'banana', 'beetroot', 'bell pepper', 'cabbage', 'capsicum',
-           'carrot', 'cauliflower', 'chilli pepper', 'corn', 'cucumber',
-           'eggplant', 'garlic', 'ginger', 'grapes', 'jalepeno', 'kiwi',
-           'lemon', 'lettuce', 'mango', 'onion', 'orange', 'paprika', 'pear',
-           'peas', 'pineapple', 'pomegranate', 'potato', 'raddish',
-           'soy beans', 'spinach', 'sweetcorn', 'sweetpotato', 'tomato',
-           'turnip', 'watermelon']
+from .models import classes
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 try:
@@ -65,6 +59,7 @@ def upload_image(request):
         if form.is_valid():
             image = form.cleaned_data['image']
             img = Image.open(image)
+            img = img.convert("RGB")
             predictions, predicted_class = predict_image(img)
 
             # Сохраняем результаты в базу данных
@@ -81,7 +76,7 @@ def upload_image(request):
 
             # Получаем URL изображения из модели
             image_url = image_instance.image.url
-            classes_and_probs = zip(top_classes, top_probs)
+            classes_and_probs = zip(top_classes, top_probs * 100)
 
             return render(request, 'result.html',
                           {'classes_and_probs': classes_and_probs,
@@ -96,4 +91,4 @@ def upload_image(request):
 def history(request):
     history = ImagePrediction.objects.order_by('-uploaded_at')
     return render(request, 'history.html',
-                  {'history': history, "classes": classes})
+                  {'history': history})
