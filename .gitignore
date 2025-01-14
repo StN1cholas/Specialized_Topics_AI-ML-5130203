@@ -6,10 +6,10 @@ __pycache__/
 venv/
 
 # Django SQLite database
-db.sqlite3
+website/db.sqlite3
 
 # Media files (uploads)
-media/
+website/media/
 
 # Static files (generated)
 static/
@@ -27,4 +27,4 @@ static/
 **/ResNet50Custom.pkl
 
 #other files
-testiki/
+website/testiki/
