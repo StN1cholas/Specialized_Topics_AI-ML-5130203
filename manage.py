@@ -3,8 +3,11 @@
 import os
 import sys
 import django
+import logging
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'AIsite.settings')
 django.setup()
+
 
 def main():
     """Run administrative tasks."""
@@ -21,5 +24,10 @@ def main():
 
 
 if __name__ == "__main__":
-    from imageprocessor.models import ResNet50Custom
+    mock = False
+    try:
+        from imageprocessor.models import ResNet50Custom
+    except:
+        logging.warning("resnet not found. using mock")
+        pass
     main()

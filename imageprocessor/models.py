@@ -2,10 +2,13 @@ import torch.nn as nn
 from torchvision import models as tmodels
 from django.db import models
 
+
 class ImagePrediction(models.Model):
-    image = models.ImageField(upload_to='images/')  # Загрузка изображений в папку 'images/'
+    image = models.ImageField(
+        upload_to='images/')  # Загрузка изображений в папку 'images/'
     predictions = models.TextField()  # JSON-строка с предсказаниями
-    uploaded_at = models.DateTimeField(auto_now_add=True)  # Дата и время загрузки
+    uploaded_at = models.DateTimeField(
+        auto_now_add=True)  # Дата и время загрузки
 
     def __str__(self):
         return f"Prediction uploaded at {self.uploaded_at}"
